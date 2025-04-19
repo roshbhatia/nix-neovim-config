@@ -29,3 +29,5 @@ prompt.md
 roadmap.md
 
 dependency-docs/
+go-plugin
+.gitignore
