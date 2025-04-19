@@ -2,17 +2,13 @@ package main
 
 import (
    "log"
-   "os"
    nvimplugin "github.com/neovim/go-client/nvim/plugin"
-   "github.com/roshbhatia/nix-neovim-config/go-plugin/pkg/core"
-   "github.com/roshbhatia/nix-neovim-config/go-plugin/pkg/modules"
+   "github.com/roshbhatia/nix-neovim-config/pkg/core"
+   "github.com/roshbhatia/nix-neovim-config/pkg/modules"
 )
 
 func main() {
-   opts := &nvimplugin.Options{
-       Addr: os.Getenv("NVIM_LISTEN_ADDRESS"),
-   }
-   nvimplugin.Main(opts, func(p *nvimplugin.Plugin) error {
+   nvimplugin.Main(func(p *nvimplugin.Plugin) error {
        ctx := core.NewContext(p)
        var mods []core.Module
        // Register modules here
