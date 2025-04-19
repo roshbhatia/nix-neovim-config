@@ -23,6 +23,7 @@ func main() {
            modules.NewTelescopeModule(),
            modules.NewTreesitterModule(),
            modules.NewOilModule(),
+           modules.NewCmpModule(),
            modules.NewAutopairsModule(),
        )
        for _, m := range mods {
