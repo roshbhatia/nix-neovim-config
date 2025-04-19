@@ -1,11 +1,42 @@
 version: '3'
 
+vars:
+  config_dir: "{{ or .Env.XDG_CONFIG_HOME (printf \"%s/.config\" .Env.HOME) }}/nvim"
+
 tasks:
   default:
     desc: Show help information
     cmds:
       - task -l
     silent: true
+
+  build-plugin:
+    desc: Build the Go plugin binary
+    cmds:
+      - cd go-plugin && go mod tidy
+      - cd go-plugin && go build -o go-plugin
+
+  install:
+    desc: Build and install Neovim configuration and Go plugin
+    deps:
+      - build-plugin
+    cmds:
+      - mkdir -p "{{.config_dir}}/bin"
+      - cp go-plugin/go-plugin "{{.config_dir}}/bin/go-plugin"
+      - rsync -a --delete --exclude '.git' --exclude 'go-plugin' --exclude 'dependency-docs' --exclude '*.md' --exclude '*.ascii' --exclude 'Taskfile.yml' --exclude '.gitignore' . "{{.config_dir}}"
+    usage: |
+      Install the Neovim configuration and Go plugin:
+        task install
+
+  uninstall:
+    desc: Remove installed Neovim configuration and Go plugin
+    cmds:
+      - |
+        echo "Removing Neovim config at {{.config_dir}}"
+        rm -rf "{{.config_dir}}"
+    usage: |
+      Uninstall the Neovim configuration and Go plugin:
+        task uninstall
 
   run-local:
     desc: Run Neovim with local configuration (isolated)
