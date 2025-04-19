@@ -12,7 +12,10 @@ func main() {
        ctx := core.NewContext(p)
        var mods []core.Module
        // Register modules here
-       mods = append(mods, modules.NewWhichKeyModule())
+       mods = append(mods,
+           modules.NewWhichKeyModule(),
+           modules.NewThemeToggleModule(),
+       )
        for _, m := range mods {
            if err := m.Setup(ctx); err != nil {
                return err

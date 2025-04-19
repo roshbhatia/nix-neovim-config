@@ -11,6 +11,11 @@ type Context struct {
    Nvim   *nvim.Nvim
 }
 
+// SetOption sets a global Vim option.
+func (c *Context) SetOption(name string, value interface{}) error {
+   return c.Nvim.SetOption(name, value)
+}
+
 // NewContext creates a new Context from the plugin instance.
 func NewContext(p *nvimplugin.Plugin) *Context {
    return &Context{Plugin: p, Nvim: p.Nvim}
