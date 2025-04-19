@@ -18,6 +18,7 @@ func main() {
            modules.NewWhichKeyModule(),
            modules.NewDeviconsModule(),
            modules.NewLualineModule(),
+           modules.NewNvimTreeModule(),
            modules.NewCommentModule(),
            modules.NewHopModule(),
            modules.NewThemeToggleModule(),
