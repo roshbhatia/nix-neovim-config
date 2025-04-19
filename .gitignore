@@ -29,5 +29,6 @@ prompt.md
 roadmap.md
 
 dependency-docs/
+/%!s(<nil>)/
 go-plugin
 .gitignore
