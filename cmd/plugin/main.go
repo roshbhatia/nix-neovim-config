@@ -31,6 +31,8 @@ func main() {
            modules.NewCopilotCmpModule(),
            modules.NewCopilotChatModule(),
            modules.NewLazygitModule(),
+           modules.NewAutosessionModule(),
+           modules.NewAlphaModule(),
            modules.NewNvimLintModule(),
        )
        for _, m := range mods {
