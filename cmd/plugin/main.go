@@ -19,7 +19,9 @@ func main() {
            modules.NewCommentModule(),
            modules.NewHopModule(),
            modules.NewThemeToggleModule(),
+           modules.NewNeoscrollModule(),
            modules.NewTelescopeModule(),
+           modules.NewTreesitterModule(),
            modules.NewOilModule(),
            modules.NewAutopairsModule(),
        )
