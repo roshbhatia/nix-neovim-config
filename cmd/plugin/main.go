@@ -20,6 +20,7 @@ func main() {
            modules.NewCommentModule(),
            modules.NewHopModule(),
            modules.NewThemeToggleModule(),
+           modules.NewThemifyModule(),
            modules.NewNeoscrollModule(),
            modules.NewTelescopeModule(),
            modules.NewTreesitterModule(),
