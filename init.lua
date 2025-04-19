@@ -1,4 +1,7 @@
 vim.g.vscode = (vim.fn.exists("g:vscode") == 1) or (vim.env.VSCODE_GIT_IPC_HANDLE ~= nil)
+-- Ensure the Go remote plugin binary is discoverable for registration
+local config_bin = vim.fn.stdpath("config") .. "/bin"
+vim.env.PATH = config_bin .. ":" .. vim.env.PATH
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -26,33 +29,6 @@ vim.opt.clipboard = "unnamedplus"
 
 vim.keymap.set("n", ":", ":", { noremap = true, desc = "Command mode" })
 
--- Common settings
-local function setup_common_settings()
-  vim.opt.hlsearch = true
-  vim.opt.incsearch = true
-  vim.opt.ignorecase = true
-  vim.opt.smartcase = true
-
-  vim.opt.expandtab = true
-  vim.opt.shiftwidth = 2
-  vim.opt.tabstop = 2
-  vim.opt.smartindent = true
-  vim.opt.wrap = false
-  vim.opt.linebreak = true
-  vim.opt.breakindent = true
-
-  vim.opt.splitbelow = true
-  vim.opt.splitright = true
-
-  vim.opt.updatetime = 100
-  vim.opt.timeoutlen = 300
-
-  vim.opt.scrolloff = 8
-  vim.opt.sidescrolloff = 8
-
-  vim.opt.mouse = "a"
-  vim.opt.clipboard = "unnamedplus"
-end
 
 local function setup_neovim_settings()
   vim.opt.number = true
@@ -79,7 +55,7 @@ local function setup_vscode_settings()
   vim.notify("SysInit -- VSCode Neovim integration detected", vim.log.levels.INFO)
 end
 
-setup_common_settings()
+-- Neovim vs VSCode specific settings
 if vim.g.vscode then
   setup_vscode_settings()
 else
@@ -106,9 +82,6 @@ if not vim.g.vscode then
     },
     -- Core editor functionality
     editor = {
-      "which-key",
-      "telescope",
-      "oil",
       "wilder",
     },
     -- Tool modules
@@ -125,7 +98,6 @@ if not vim.g.vscode then
       "copilot",
       "copilot-chat",
       "copilot-cmp",
-      "autopairs",
       "trouble",
       "alpha",
       "autosession",
@@ -136,9 +108,7 @@ else
   module_system = {
     -- Core functionality
     editor = {
-      "which-key",
       "vscode",
-      "telescope",
     },
     -- No UI modules needed
     ui = {
@@ -147,7 +117,6 @@ else
     },
     -- Minimal tool modules
     tools = {
-      "autopairs",
       "comment",
       "treesitter",
       "hop",
@@ -157,13 +126,31 @@ else
 end
 local function collect_plugin_specs()
   local specs = module_loader.get_plugin_specs(module_system)
+  -- Always include which-key plugin spec (Go plugin config will handle setup)
+  table.insert(specs, {
+    "folke/which-key.nvim",
+    lazy = false,
+    dependencies = { "echasnovski/mini.icons" },
+  })
+  -- Autopairs plugin
+  table.insert(specs, {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+  })
 
   if not vim.g.vscode then
+    -- Git signs
     table.insert(specs, {
       "lewis6991/gitsigns.nvim",
       config = function()
         require("gitsigns").setup()
       end,
+    })
+    -- Oil: file explorer plugin
+    table.insert(specs, {
+      "stevearc/oil.nvim",
+      lazy = false,
     })
   end
 
@@ -172,7 +159,8 @@ end
 
 require("lazy").setup(collect_plugin_specs())
 
-module_loader.setup_modules(module_system)
+-- Configuration via Go plugin; skip Lua module loader
+-- module_loader.setup_modules(module_system)
 
 if vim.g.vscode then
   local vscode_module = require("modules.editor.vscode")

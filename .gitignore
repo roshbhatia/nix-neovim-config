@@ -27,6 +27,7 @@ go.work.sum
 # Local reference files (ignored)
 prompt.md
 roadmap.md
+bin/
 
 dependency-docs/
 /%!s(<nil>)/

@@ -14,6 +14,22 @@ func (m *CommonModule) Name() string { return "settings.common" }
 // Setup applies the common settings.
 func (m *CommonModule) Setup(ctx *core.Context) error {
     cmds := []string{
+        "set number",
+        "set cursorline",
+        "set signcolumn=yes",
+        "set termguicolors",
+        "set noshowmode",
+        "set lazyredraw",
+        "set foldmethod=expr",
+        "set foldexpr=nvim_treesitter#foldexpr()",
+        "set nofoldenable",
+        "set foldlevel=99",
+        "set pumheight=10",
+        "set cmdheight=1",
+        "set hidden",
+        "set showtabline=2",
+        "set shortmess+=c",
+        "set completeopt=menuone,noselect",
         "set hlsearch",
         "set incsearch",
         "set ignorecase",

@@ -36,6 +36,8 @@ tasks:
           --exclude 'Taskfile.yml' \
           --exclude '.gitignore' \
           . "$config_dir"
+        echo "Updating remote plugin manifest"
+        PATH="$config_dir/bin:$PATH" nvim --headless -u "$config_dir/init.lua" +UpdateRemotePlugins +qa
     usage: |
       Install the Neovim configuration and Go plugin:
         task install
