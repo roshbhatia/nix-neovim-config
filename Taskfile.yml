@@ -1,0 +1,115 @@
+version: '3'
+
+tasks:
+  default:
+    desc: Show help information
+    cmds:
+      - task -l
+    silent: true
+
+  run-local:
+    desc: Run Neovim with local configuration (isolated)
+    silent: true
+    cmds:
+      - |
+        nvim -u "$(pwd)/init.lua"
+    usage: |
+      Run Neovim with the local configuration (isolated environment):
+        task run-local
+
+  run-local-headless:
+    desc: Run Neovim with local configuration (isolated) (headless)
+    silent: true
+    cmds:
+      - |
+        nvim -u "$(pwd)/init.lua" --headless
+    usage: |
+      Run Neovim with the local configuration (isolated environment):
+        task run-local-headless
+      
+  run-local-isolated:
+    desc: Run Neovim with local configuration (isolated)
+    silent: true
+    cmds:
+      - |
+        TMP_DIR=$(mktemp -d /tmp/nvim-test-XXXXXX)
+        mkdir -p $TMP_DIR/share $TMP_DIR/config $TMP_DIR/state $TMP_DIR/cache
+        echo "Running Neovim with config from $(pwd)"
+        NVIM_APPNAME=nvim-test \
+        XDG_DATA_HOME=$TMP_DIR/share \
+        XDG_CONFIG_HOME=$TMP_DIR/config \
+        XDG_STATE_HOME=$TMP_DIR/state \
+        XDG_CACHE_HOME=$TMP_DIR/cache \
+        nvim --cmd "set runtimepath^=$(pwd),$(pwd)/lua" -u "$(pwd)/init.lua"
+    usage: |
+      Run Neovim with the local configuration (isolated environment):
+        task run-local-isolated
+
+  run-local-headless-isolated:
+    desc: Run Neovim with local configuration (isolated) (headless)
+    silent: true
+    cmds:
+      - |
+        TMP_DIR=$(mktemp -d /tmp/nvim-test-XXXXXX)
+        mkdir -p $TMP_DIR/share $TMP_DIR/config $TMP_DIR/state $TMP_DIR/cache
+        echo "Running Neovim with config from $(pwd)"
+        NVIM_APPNAME=nvim-test \
+        XDG_DATA_HOME=$TMP_DIR/share \
+        XDG_CONFIG_HOME=$TMP_DIR/config \
+        XDG_STATE_HOME=$TMP_DIR/state \
+        XDG_CACHE_HOME=$TMP_DIR/cache \
+        nvim --cmd "set runtimepath^=$(pwd),$(pwd)/lua" -u "$(pwd)/init.lua" --headless
+    usage: |
+      Run Neovim with the local configuration (isolated environment):
+        task run-local-headless-isolated
+        
+  pull-docs:
+    desc: Fetch documentation for all Neovim plugins
+    silent: true
+    cmds:
+      - |
+        RED='\033[0;31m'
+        GREEN='\033[0;32m'
+        YELLOW='\033[0;33m'
+        NC='\033[0m' # No Color
+        
+        NEOVIM_DIR="$(pwd)"
+        DOC_DIR="${NEOVIM_DIR}/dependency-docs"
+        
+        mkdir -p "${DOC_DIR}"
+        
+        echo -e "${YELLOW}Scanning Lua files for documentation URLs...${NC}"
+        
+        # Find all Lua files and process them with awk instead of grep
+        find "${NEOVIM_DIR}" -type f -name "*.lua" | while read file; do
+          # Use awk to find the line with the URL and extract it
+          url=$(awk '/-- sysinit\.nvim\.doc-url=/ { 
+            match($0, /"[^"]+"/); 
+            url = substr($0, RSTART+1, RLENGTH-2); 
+            print url; 
+            exit; 
+          }' "$file")
+          
+          if [[ -n "$url" ]]; then
+            filename=$(basename "$file" .lua)
+            echo -e "${GREEN}Found documentation URL in ${filename}: ${url}${NC}"
+            
+            echo -e "Downloading documentation from ${url}"
+            curl -s "${url}" -o "${DOC_DIR}/${filename}.md"
+            
+            if [[ $? -eq 0 ]]; then
+              echo -e "${GREEN}Successfully downloaded documentation for ${filename}${NC}"
+            else
+              echo -e "${RED}Failed to download documentation for ${filename}${NC}"
+            fi
+          fi
+        done
+        
+        found=$(find "${DOC_DIR}" -type f -name "*.md" | wc -l)
+        count=$(find "${NEOVIM_DIR}" -type f -name "*.lua" | wc -l)
+        
+        echo -e "${YELLOW}Scanned ${count} files, found ${found} documentation URLs${NC}"
+        echo -e "${GREEN}documentation saved to ${DOC_DIR}${NC}"
+    usage: |
+      Fetch documentation for all Neovim plugins:
+        task pull-docs

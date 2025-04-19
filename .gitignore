@@ -23,3 +23,9 @@ go.work.sum
 
 # env file
 .env
+
+# Local reference files (ignored)
+prompt.md
+roadmap.md
+
+dependency-docs/
