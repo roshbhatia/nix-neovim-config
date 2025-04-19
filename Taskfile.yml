@@ -10,16 +10,16 @@ tasks:
       - task -l
     silent: true
 
-  build-plugin:
+  build:
     desc: Build the Go plugin binary
     cmds:
       - cd go-plugin && go mod tidy
-      - cd go-plugin && go build -o go-plugin
+      - cd go-plugin && go build -o go-plugin ./cmd/plugin
 
   install:
     desc: Build and install Neovim configuration and Go plugin
     deps:
-      - build-plugin
+      - build
     cmds:
       - mkdir -p "{{.config_dir}}/bin"
       - cp go-plugin/go-plugin "{{.config_dir}}/bin/go-plugin"
