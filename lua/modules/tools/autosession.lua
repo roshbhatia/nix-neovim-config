@@ -101,8 +101,9 @@ M.plugins = {
       vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
       
       -- Auto open Alpha when Neovim starts with no arguments
+      -- Auto open Alpha when Neovim starts with no arguments (deferred to avoid autocmd conflicts)
       vim.api.nvim_create_autocmd("VimEnter", {
-        callback = function()
+        callback = vim.schedule_wrap(function()
           -- Only show Alpha when:
           -- 1. No arguments were passed to nvim
           -- 2. The buffer is empty
@@ -111,19 +112,21 @@ M.plugins = {
           local bufnr = vim.api.nvim_get_current_buf()
           local bufname = vim.api.nvim_buf_get_name(bufnr)
           local buftype = vim.bo[bufnr].ft
-          
+
           if argc == 0 and bufname == "" and buftype ~= "directory" then
-            -- Check if Alpha is available before trying to open it
-            local alpha_ok, _ = pcall(require, "alpha")
-            if alpha_ok then
+            local ok = pcall(function()
+              -- Check if Alpha is available before trying to open it
+              require("alpha")
               -- Close auto-session windows if they were opened
               vim.cmd("silent! %bd")
               -- Open Alpha
               vim.cmd("Alpha")
+            end)
+            if not ok then
+              -- ignore errors (e.g., invalid window id)
             end
           end
-        end,
-        nested = true,
+        end),
       })
     end
   }
