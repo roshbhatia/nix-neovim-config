@@ -17,6 +17,7 @@ func main() {
            settings.NewCommonModule(),
            modules.NewWhichKeyModule(),
            modules.NewDeviconsModule(),
+           modules.NewLualineModule(),
            modules.NewCommentModule(),
            modules.NewHopModule(),
            modules.NewThemeToggleModule(),
