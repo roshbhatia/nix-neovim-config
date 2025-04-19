@@ -22,9 +22,16 @@ func main() {
            modules.NewNeoscrollModule(),
            modules.NewTelescopeModule(),
            modules.NewTreesitterModule(),
+           modules.NewTroubleModule(),
            modules.NewOilModule(),
            modules.NewCmpModule(),
            modules.NewAutopairsModule(),
+           modules.NewConformModule(),
+           modules.NewCopilotModule(),
+           modules.NewCopilotCmpModule(),
+           modules.NewCopilotChatModule(),
+           modules.NewLazygitModule(),
+           modules.NewNvimLintModule(),
        )
        for _, m := range mods {
            if err := m.Setup(ctx); err != nil {
