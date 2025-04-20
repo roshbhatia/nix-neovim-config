@@ -13,6 +13,9 @@ type Context struct {
 
 // SetOption sets a global Vim option.
 func (c *Context) SetOption(name string, value interface{}) error {
+   if c.Nvim == nil {
+       return nil
+   }
    return c.Nvim.SetOption(name, value)
 }
 
@@ -30,10 +33,16 @@ type Module interface {
 // Map sets a keymap for the given mode.
 // Map sets a keymap for the given mode.
 func (c *Context) Map(mode, lhs, rhs string, opts map[string]bool) error {
+   if c.Nvim == nil {
+       return nil
+   }
    return c.Nvim.SetKeyMap(mode, lhs, rhs, opts)
 }
 
 // Command runs a Vim command.
 func (c *Context) Command(cmd string) error {
+   if c.Nvim == nil {
+       return nil
+   }
    return c.Nvim.Command(cmd)
 }

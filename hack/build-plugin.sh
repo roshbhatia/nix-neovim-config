@@ -7,3 +7,6 @@ go mod tidy
 echo "Building Go plugin (sysinit-nvim-core)..."
 go build -o bin/sysinit-nvim-core ./cmd/plugin
 echo "Build complete: $(pwd)/bin/sysinit-nvim-core"
+echo "Generating remote plugin manifest..."
+bin/sysinit-nvim-core --manifest=sysinit-nvim-core --location plugin/sysinit-nvim-core.vim
+echo "Manifest generated at plugin/sysinit-nvim-core.vim"
