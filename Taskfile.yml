@@ -12,7 +12,7 @@ tasks:
     desc: Build the Go plugin binary
     cmds:
       - go mod tidy
-      - go build -o go-plugin ./cmd/plugin
+      - hack/build-plugin.sh
 
   install:
     desc: Build and install Neovim configuration and Go plugin
@@ -23,7 +23,11 @@ tasks:
         config_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/nvim"
         echo "Installing to $config_dir"
         mkdir -p "$config_dir/bin"
-        cp go-plugin "$config_dir/bin/go-plugin"
+        # Copy sysinit-nvim-core to Neovim config
+        cp bin/sysinit-nvim-core "$config_dir/bin/sysinit-nvim-core"
+        # Also install into /usr/local/bin for system-wide availability
+        echo "Installing sysinit-nvim-core to /usr/local/bin (may require sudo)"
+        sudo install -m 755 bin/sysinit-nvim-core /usr/local/bin/sysinit-nvim-core
         rsync -a --delete \
           --exclude '.git' \
           --exclude 'cmd' \

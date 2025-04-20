@@ -4,6 +4,6 @@ cd "$(dirname "$0")/.."
 mkdir -p bin
 echo "Tidying modules..."
 go mod tidy
-echo "Building Go plugin..."
-go build -o bin/go-plugin ./cmd/plugin
-echo "Build complete: $(pwd)/bin/go-plugin"
+echo "Building Go plugin (sysinit-nvim-core)..."
+go build -o bin/sysinit-nvim-core ./cmd/plugin
+echo "Build complete: $(pwd)/bin/sysinit-nvim-core"
