@@ -24,13 +24,9 @@ func (m *VscodeModule) Name() string {
 // Setup registers VSCode keymaps mirroring Neovim leader mappings.
 // It only runs when 'vim.g.vscode' is true.
 func (m *VscodeModule) Setup(ctx *core.Context) error {
-   // Detect VSCode environment
-   vscodeVar, err := ctx.Nvim.GetVar("vscode")
-   if err != nil {
-       return nil
-   }
-   enabled, ok := vscodeVar.(bool)
-   if !ok || !enabled {
+   // Detect VSCode environment via vim.g.vscode
+   var enabled bool
+   if err := ctx.Nvim.Eval("vim.g.vscode == true", &enabled); err != nil || !enabled {
        return nil
    }
 
@@ -50,10 +46,9 @@ func (m *VscodeModule) Setup(ctx *core.Context) error {
 
    // Determine leader key (default to space)
    leader := " "
-   if ldr, err := ctx.Nvim.GetVar("mapleader"); err == nil {
-       if s, ok := ldr.(string); ok && s != "" {
-           leader = s
-       }
+   var ldr string
+   if err := ctx.Nvim.Eval("vim.g.mapleader", &ldr); err == nil && ldr != "" {
+       leader = ldr
    }
 
    // Retrieve all normal mode keymaps

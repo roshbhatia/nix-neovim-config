@@ -36,6 +36,10 @@ tasks:
           --exclude 'Taskfile.yml' \
           --exclude '.gitignore' \
           . "$config_dir"
+        # Install plugins via lazy.nvim in headless mode
+        echo "Installing plugins via lazy.nvim (headless)"
+        PATH="$config_dir/bin:$PATH" nvim --headless -u "$config_dir/init.lua" +LazyInstall +qa
+        # Update remote plugin manifest for Go plugin
         echo "Updating remote plugin manifest"
         PATH="$config_dir/bin:$PATH" nvim --headless -u "$config_dir/init.lua" +UpdateRemotePlugins +qa
     usage: |
