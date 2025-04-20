@@ -16,6 +16,7 @@ func main() {
        mods = append(mods,
            settings.NewCommonModule(),
            modules.NewWhichKeyModule(),
+           modules.NewVscodeModule(),
            modules.NewWeztermModule(),
            modules.NewDeviconsModule(),
            modules.NewLualineModule(),

@@ -164,7 +164,7 @@ require("lazy").setup(collect_plugin_specs())
 
 if vim.g.vscode then
   local vscode_module = require("modules.editor.vscode")
-  if vscode_module and vscode_module.setup_compat_plugins then
-    vscode_module.setup_compat_plugins()
+  if vscode_module and vscode_module.setup_layer then
+    vscode_module.setup_layer()
   end
 end
