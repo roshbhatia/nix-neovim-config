@@ -10,6 +10,11 @@ import (
 
 func main() {
    nvimplugin.Main(func(p *nvimplugin.Plugin) error {
+       // Ensure plugin host starts on VimEnter to apply Setup for all modules
+       p.HandleAutocmd(&nvimplugin.AutocmdOptions{
+           Event:   "VimEnter",
+           Pattern: "*",
+       }, func() error { return nil })
        ctx := core.NewContext(p)
        var mods []core.Module
        // Register modules here in desired order

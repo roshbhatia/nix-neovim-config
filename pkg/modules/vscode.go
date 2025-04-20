@@ -24,6 +24,10 @@ func (m *VscodeModule) Name() string {
 // Setup registers VSCode keymaps mirroring Neovim leader mappings.
 // It only runs when 'vim.g.vscode' is true.
 func (m *VscodeModule) Setup(ctx *core.Context) error {
+   // Skip setup when running manifest generation (no Nvim client)
+   if ctx.Nvim == nil {
+       return nil
+   }
    // Detect VSCode environment via vim.g.vscode
    var enabled bool
    if err := ctx.Nvim.Eval("vim.g.vscode == true", &enabled); err != nil || !enabled {
