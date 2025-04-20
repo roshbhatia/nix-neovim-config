@@ -62,7 +62,9 @@ else
   setup_neovim_settings()
 end
 
-local module_loader = require("core.module_loader")
+-- legacy Lua module loader (removed); guard its use if present
+local ok_module_loader, module_loader = pcall(require, "core.module_loader")
+if not ok_module_loader then module_loader = nil end
 
 -- determine module loading system
 local module_system
@@ -125,7 +127,11 @@ else
   }
 end
 local function collect_plugin_specs()
-  local specs = module_loader.get_plugin_specs(module_system)
+  -- gather plugin specs via legacy Lua loader if available
+  local specs = {}
+  if module_loader and module_loader.get_plugin_specs then
+    specs = module_loader.get_plugin_specs(module_system)
+  end
   -- Always include which-key plugin spec (Go plugin config will handle setup)
   table.insert(specs, {
     "folke/which-key.nvim",
@@ -162,9 +168,10 @@ require("lazy").setup(collect_plugin_specs())
 -- Configuration via Go plugin; skip Lua module loader
 -- module_loader.setup_modules(module_system)
 
+-- legacy VSCode integration via Lua module (removed); guard its use
 if vim.g.vscode then
-  local vscode_module = require("modules.editor.vscode")
-  if vscode_module and vscode_module.setup_layer then
+  local ok_vscode_module, vscode_module = pcall(require, "modules.editor.vscode")
+  if ok_vscode_module and vscode_module.setup_layer then
     vscode_module.setup_layer()
   end
 end
